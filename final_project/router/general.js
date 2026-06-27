@@ -26,63 +26,72 @@ public_users.post("/register", (req,res) => {
   return res.status(404).json({message: "Unable to register user."});
 });
 
-const bookApi = axios.create({
-  adapter: () => {
-    return Promise.resolve({
-      data: books,
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {}
-    });
-  }
-});
+const booksUrl = 'data:application/json,' + encodeURIComponent(JSON.stringify(books));
 
 // Get the book list available in the shop
 public_users.get('/',async function (req, res) {
-  const response = await bookApi.get('/');
-  res.send(JSON.stringify(response.data,null,4));
+  try {
+    const response = await axios.get(booksUrl);
+    const bookData = JSON.parse(response.data.toString());
+    res.send(JSON.stringify(bookData,null,4));
+  } catch (error) {
+    res.status(500).json({message: "Unable to retrieve books"});
+  }
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',async function (req, res) {
   // Retrieve the isbn parameter from the request URL and send the corresponding book details
   const isbn = req.params.isbn;
-  const response = await bookApi.get('/');
-  
-  res.send(response.data[isbn]);
+  try {
+    const response = await axios.get(booksUrl);
+    const bookData = JSON.parse(response.data.toString());
+    res.send(bookData[isbn]);
+  } catch (error) {
+    res.status(500).json({message: "Unable to retrieve book"});
+  }
  });
   
 // Get book details based on author
 public_users.get('/author/:author',async function (req, res) {
   // Retrieve the author parameter from the request URL and send matching book details
   const author = req.params.author;
-  const response = await bookApi.get('/');
-  let result = {};
+  try {
+    const response = await axios.get(booksUrl);
+    const bookData = JSON.parse(response.data.toString());
+    let result = {};
 
-  Object.keys(response.data).forEach((key) => {
-    if (response.data[key].author === author) {
-      result[key] = response.data[key];
-    }
-  });
+    Object.keys(bookData).forEach((key) => {
+      if (bookData[key].author === author) {
+        result[key] = bookData[key];
+      }
+    });
 
-  res.send(result);
+    res.send(result);
+  } catch (error) {
+    res.status(500).json({message: "Unable to retrieve books by author"});
+  }
 });
 
 // Get all books based on title
 public_users.get('/title/:title',async function (req, res) {
   // Retrieve the title parameter from the request URL and send matching book details
   const title = req.params.title;
-  const response = await bookApi.get('/');
-  let result = {};
+  try {
+    const response = await axios.get(booksUrl);
+    const bookData = JSON.parse(response.data.toString());
+    let result = {};
 
-  Object.keys(response.data).forEach((key) => {
-    if (response.data[key].title === title) {
-      result[key] = response.data[key];
-    }
-  });
+    Object.keys(bookData).forEach((key) => {
+      if (bookData[key].title === title) {
+        result[key] = bookData[key];
+      }
+    });
 
-  res.send(result);
+    res.send(result);
+  } catch (error) {
+    res.status(500).json({message: "Unable to retrieve books by title"});
+  }
 });
 
 //  Get book review
