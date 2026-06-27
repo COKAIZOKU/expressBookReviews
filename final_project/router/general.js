@@ -70,14 +70,15 @@ public_users.get('/author/:author',async function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title',async function (req, res) {
   // Retrieve the title parameter from the request URL and send matching book details
   const title = req.params.title;
+  const response = await bookApi.get('/');
   let result = {};
 
-  Object.keys(books).forEach((key) => {
-    if (books[key].title === title) {
-      result[key] = books[key];
+  Object.keys(response.data).forEach((key) => {
+    if (response.data[key].title === title) {
+      result[key] = response.data[key];
     }
   });
 
