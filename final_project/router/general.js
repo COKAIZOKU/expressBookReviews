@@ -45,11 +45,12 @@ public_users.get('/',async function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn',async function (req, res) {
   // Retrieve the isbn parameter from the request URL and send the corresponding book details
   const isbn = req.params.isbn;
+  const response = await bookApi.get('/');
   
-  res.send(books[isbn]);
+  res.send(response.data[isbn]);
  });
   
 // Get book details based on author
