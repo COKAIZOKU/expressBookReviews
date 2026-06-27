@@ -28,19 +28,18 @@ public_users.post("/register", (req,res) => {
 
 const booksUrl = 'data:application/json,' + encodeURIComponent(JSON.stringify(books));
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  axios.get(booksUrl)
-    .then(response => {
-      const bookData = JSON.parse(response.data.toString());
-      res.send(JSON.stringify(bookData,null,4));
-    })
-    .catch(error => {
-      res.status(500).json({message: "Unable to retrieve books"});
-    });
+// Task 10: Get the list of all books using async/await with Axios
+public_users.get('/',async function (req, res) {
+  try {
+    const response = await axios.get(booksUrl);
+    const bookData = JSON.parse(response.data.toString());
+    res.send(JSON.stringify(bookData,null,4));
+  } catch (error) {
+    res.status(500).json({message: "Unable to retrieve books"});
+  }
 });
 
-// Get book details based on ISBN
+// Task 11: Get book details based on ISBN using Promise callbacks with Axios
 public_users.get('/isbn/:isbn',function (req, res) {
   // Retrieve the isbn parameter from the request URL and send the corresponding book details
   const isbn = req.params.isbn;
@@ -55,7 +54,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
     });
  });
   
-// Get book details based on author
+// Task 12: Get book details based on author using Promise callbacks with Axios
 public_users.get('/author/:author',function (req, res) {
   // Retrieve the author parameter from the request URL and send matching book details
   const author = req.params.author;
@@ -78,7 +77,7 @@ public_users.get('/author/:author',function (req, res) {
     });
 });
 
-// Get all books based on title
+// Task 13: Get book details based on title using Promise callbacks with Axios
 public_users.get('/title/:title',function (req, res) {
   // Retrieve the title parameter from the request URL and send matching book details
   const title = req.params.title;
