@@ -54,14 +54,15 @@ public_users.get('/isbn/:isbn',async function (req, res) {
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async function (req, res) {
   // Retrieve the author parameter from the request URL and send matching book details
   const author = req.params.author;
+  const response = await bookApi.get('/');
   let result = {};
 
-  Object.keys(books).forEach((key) => {
-    if (books[key].author === author) {
-      result[key] = books[key];
+  Object.keys(response.data).forEach((key) => {
+    if (response.data[key].author === author) {
+      result[key] = response.data[key];
     }
   });
 
